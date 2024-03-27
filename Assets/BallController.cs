@@ -21,14 +21,29 @@ public class BallController : MonoBehaviour
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        SendBallInRandomDirection();
+        StartCoroutine(SendBallInRandomDirection());
     }
 
-    private void SendBallInRandomDirection()
+    private IEnumerator SendBallInRandomDirection()
     {
-        _rigidbody2D.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * _speed;
+        var randomX = Random.Range(-1f, 1f);
+        while (randomX is -1 or 0 or 1)
+        {
+            randomX  = Random.Range(-1f, 1f);
+            yield return null;
+        }
+        
+        var randomY = Random.Range(-1f, 1f);
+        while (randomY is -1 or 0 or 1)
+        {
+            randomY  = Random.Range(-1f, 1f);
+            yield return null;
+        }
+        
+        _rigidbody2D.velocity = new Vector2(randomX, randomY).normalized * _speed;
         lastRigidbodyVelocity = _rigidbody2D.velocity;
     }
+    
 
     // Update is called once per frame
     void Update()
@@ -51,14 +66,24 @@ public class BallController : MonoBehaviour
         _rigidbody2D.simulated = false;
         _rigidbody2D.transform.position = Vector3.zero;
         _rigidbody2D.simulated = true;
-        SendBallInRandomDirection();
+        StartCoroutine(SendBallInRandomDirection());
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        var randomOffset = new Vector2(Random.Range(-_reflectionRandomization, _reflectionRandomization), Random.Range(-_reflectionRandomization, _reflectionRandomization));
+        var randomOffset = new Vector2(Random.Range(_reflectionRandomization, 0), Random.Range(_reflectionRandomization, 0));
         var reflectedVector = Vector2.Reflect(lastRigidbodyVelocity, (other.contacts[0].normal + randomOffset).normalized);
         _rigidbody2D.velocity = reflectedVector;
         lastRigidbodyVelocity = _rigidbody2D.velocity;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (transform.position.x > 0)
+            GameManager.LeftPlayerScore++;
+        if (transform.position.x < 0)
+            GameManager.RightPlayerScore++;
+        GameManager.ScoreUpdated?.Invoke(null, EventArgs.Empty);
+        ResetBall();
     }
 }

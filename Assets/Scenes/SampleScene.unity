@@ -416,7 +416,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody2D: {fileID: 0}
   _speed: 7
-  _reflectionRandomization: 0.5
+  _reflectionRandomization: 0.1
 --- !u!50 &1238229468
 Rigidbody2D:
   serializedVersion: 4
@@ -741,6 +741,10 @@ PrefabInstance:
     - target: {fileID: 7281585871291100522, guid: 530bc9d433e3ab547a9b3fbab69f5aef, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8198378164066807930, guid: 530bc9d433e3ab547a9b3fbab69f5aef, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
