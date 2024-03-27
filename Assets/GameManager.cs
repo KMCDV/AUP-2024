@@ -34,5 +34,6 @@ public class GameManager : MonoBehaviour
     {
         LeftPlayerScore = 0;
         RightPlayerScore = 0;
+        Time.timeScale = 1f;
     }
 }

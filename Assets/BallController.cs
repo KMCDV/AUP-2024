@@ -16,12 +16,13 @@ public class BallController : MonoBehaviour
     
 
     private Vector2 lastRigidbodyVelocity;
+    private bool isGameStarted;
     
     // Start is called before the first frame update
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        StartCoroutine(SendBallInRandomDirection());
+        //StartCoroutine(SendBallInRandomDirection());
     }
 
     private IEnumerator SendBallInRandomDirection()
@@ -50,14 +51,15 @@ public class BallController : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Space))
         {
+            isGameStarted = true;
             ResetBall();
         }
 
-        if (_rigidbody2D.velocity.magnitude < .1f)
+        if (isGameStarted && _rigidbody2D.velocity.magnitude < .1f)
         {
+            isGameStarted = false;
             ResetBall();
         }
-            
     }
 
     private void ResetBall()
@@ -66,7 +68,8 @@ public class BallController : MonoBehaviour
         _rigidbody2D.simulated = false;
         _rigidbody2D.transform.position = Vector3.zero;
         _rigidbody2D.simulated = true;
-        StartCoroutine(SendBallInRandomDirection());
+        if(isGameStarted)
+            StartCoroutine(SendBallInRandomDirection());
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -84,6 +87,7 @@ public class BallController : MonoBehaviour
         if (transform.position.x < 0)
             GameManager.RightPlayerScore++;
         GameManager.ScoreUpdated?.Invoke(null, EventArgs.Empty);
+        isGameStarted = false;
         ResetBall();
     }
 }
